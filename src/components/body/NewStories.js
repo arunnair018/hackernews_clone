@@ -42,7 +42,7 @@ const NewStories = () => {
       setStories([]);
       setStoryItem([]);
     };
-  });
+  }, [setStories]);
 
   return storyItem.length > 0 ? (
     <>
