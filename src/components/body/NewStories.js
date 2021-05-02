@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 const NewStories = () => {
   const limit = 10;
   const [page, setPage] = useState(1);
-  const [error, setError] = useState("");
   const [stories, setStories] = useState([]);
   const [storyItem, setStoryItem] = useState([]);
 
@@ -18,7 +17,6 @@ const NewStories = () => {
       })
       .catch((err) => {
         console.log(err);
-        setError("Failed to get stories.");
       });
   };
 
@@ -39,10 +37,12 @@ const NewStories = () => {
 
   useEffect(() => {
     fetchStories();
-    return () => {};
-  }, []);
-
-  console.log(storyItem[0]);
+    return () => {
+      setPage(1);
+      setStories([]);
+      setStoryItem([]);
+    };
+  });
 
   return storyItem.length > 0 ? (
     <>
@@ -55,7 +55,12 @@ const NewStories = () => {
                 className="list-group-item d-flex justify-content-between align-items-start"
               >
                 <div className="ms-2 me-auto">
-                  <a href={story.url} className="nostyle" target="_blank">
+                  <a
+                    href={story.url}
+                    className="nostyle"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <div className="fw-bold">{story.title}</div>
                   </a>
                   <div>

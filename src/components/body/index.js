@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import TopStories from "./TopStories";
 import BestStories from "./BestStories";
 import NewStories from "./NewStories";

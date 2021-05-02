@@ -5,9 +5,9 @@ const Header = () => (
   <>
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
+        <NavLink className="navbar-brand" exact to="/">
           Hacker News
-        </a>
+        </NavLink>
 
         <button
           className="navbar-toggler"
