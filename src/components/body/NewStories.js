@@ -26,10 +26,13 @@ const NewStories = () => {
     })();
   }, [page]);
 
+  console.log(storyItem);
+
   return storyItem.length > 0 ? (
     <>
       <div className="container mb-5">
         <ol className="list-group list-group-numbered mt-5 mb-5">
+          <h2>New Stories</h2>
           {storyItem.map((story) => {
             return (
               <li
@@ -38,7 +41,7 @@ const NewStories = () => {
               >
                 <div className="ms-2 me-auto">
                   <a
-                    href={story.url}
+                    href={story.url || "#"}
                     className="nostyle"
                     target="_blank"
                     rel="noreferrer"

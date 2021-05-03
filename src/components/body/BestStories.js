@@ -30,6 +30,7 @@ const BestStories = () => {
     <>
       <div className="container mb-5">
         <ol className="list-group list-group-numbered mt-5 mb-5">
+          <h2>Best Stories</h2>
           {storyItem.map((story) => {
             return (
               <li
@@ -38,7 +39,7 @@ const BestStories = () => {
               >
                 <div className="ms-2 me-auto">
                   <a
-                    href={story.url}
+                    href={story.url || "#"}
                     className="nostyle"
                     target="_blank"
                     rel="noreferrer"
