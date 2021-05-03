@@ -1,48 +1,30 @@
 import axios from "axios";
 import timeago from "../../utilities";
 import React, { useState, useEffect } from "react";
-
+var totalItems = 0;
 const TopStories = () => {
   const limit = 10;
   const [page, setPage] = useState(1);
-  const [stories, setStories] = useState([]);
   const [storyItem, setStoryItem] = useState([]);
 
-  const fetchStories = () => {
-    axios
-      .get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
-      .then((resp) => {
-        setStories(resp.data);
-        fetchStoryItems(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const fetchStoryItems = (stories) => {
-    let promises = [];
-    stories.slice((page - 1) * limit, page * limit).forEach((story) => {
-      promises.push(
-        axios.get(
-          `https://hacker-news.firebaseio.com/v0/item/${story}.json?print=pretty`
-        )
-      );
-    });
-    Promise.all(promises).then((stories) => {
-      stories = stories.map((value) => value.data);
-      setStoryItem([...storyItem, ...stories]);
-    });
-  };
-
   useEffect(() => {
-    fetchStories();
-    return () => {
-      setPage(1);
-      setStories([]);
-      setStoryItem([]);
-    };
-  }, [setStories]);
+    (async () => {
+      let response = await axios.get(
+        "https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty"
+      );
+      totalItems = response.data.length;
+      Promise.all(
+        response.data.slice((page - 1) * limit, page * limit).map((story) => {
+          return axios.get(
+            `https://hacker-news.firebaseio.com/v0/item/${story}.json?print=pretty`
+          );
+        })
+      ).then((values) => {
+        let newStories = values.map((value) => value.data);
+        setStoryItem((storyItem) => [...storyItem, ...newStories]);
+      });
+    })();
+  }, [page]);
 
   return storyItem.length > 0 ? (
     <>
@@ -74,14 +56,13 @@ const TopStories = () => {
             );
           })}
         </ol>
-        {page < stories.length / limit && storyItem.length > 0 && (
+        {page < totalItems / limit && storyItem.length > 0 && (
           <center>
             <button
               type="button"
               className="btn btn-primary btn-rounded"
               onClick={() => {
                 setPage(page + 1);
-                fetchStoryItems(stories);
               }}
             >
               Load More
