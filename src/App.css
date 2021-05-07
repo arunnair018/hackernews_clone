@@ -10,6 +10,10 @@ a.nostyle:visited {
   cursor: pointer;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 @keyframes ldio-hy4ytz1hdz {
   0% {
     opacity: 1;

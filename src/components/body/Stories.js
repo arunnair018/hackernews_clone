@@ -2,16 +2,16 @@ import axios from "axios";
 import timeago from "../../utilities/Timeago";
 import React, { useState, useEffect, useRef } from "react";
 import useFetch from "../../utilities/Usefetch";
+import getPagination from "../../utilities/GetPagination";
 const Stories = ({ type }) => {
   const limit = 10;
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [storyItem, setStoryItem] = useState([]);
-  const [storyIndex, totalCount] = useFetch(type);
-  const prevType = useRef("");
+  const [storyIndex, totalPages] = useFetch(type);
+  const prevType = useRef(type);
 
   useEffect(() => {
-    setLoading(true);
     Promise.all(
       storyIndex.slice((page - 1) * limit, page * limit).map((story) => {
         return axios.get(
@@ -20,48 +20,26 @@ const Stories = ({ type }) => {
       })
     ).then((values) => {
       let newStories = values.map((value) => value.data);
-      setStoryItem((storyItem) => [...storyItem, ...newStories]);
+      setStoryItem(newStories);
       setLoading(false);
     });
-    return () => {
+    return async () => {
+      setLoading(true);
+      setStoryItem([]);
       if (prevType.current !== type) {
+        console.log("cleanUp on type change");
         setPage(1);
-        setStoryItem([]);
       }
+      console.log("cleanUp callback");
       prevType.current = type;
     };
-  }, [page, storyIndex, type]);
+  }, [type, storyIndex, page]);
+
+  console.log(storyItem);
 
   return (
     <>
       <div className="container mb-5">
-        <ol className="list-group list-group-numbered mt-5 mb-5">
-          {storyItem.map((story) => {
-            return (
-              <li
-                key={Math.random()}
-                className="list-group-item d-flex justify-content-between align-items-start"
-              >
-                <div className="ms-2 me-auto">
-                  <a
-                    href={story.url || "#"}
-                    className="nostyle"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className="fw-bold">{story.title}</div>
-                  </a>
-                  <div>
-                    by {story.by} <b>&middot;</b> {story.descendants} comments
-                  </div>
-                </div>
-                <span className="badge bg-primary rounded-pill">
-                  {timeago(story.time)}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
         {loading && (
           <center>
             <div className="loadingio-spinner-bars-ou4wi5t900s">
@@ -74,18 +52,81 @@ const Stories = ({ type }) => {
             </div>
           </center>
         )}
-        {page < totalCount / limit && storyItem.length > 0 && (
-          <center>
-            <button
-              type="button"
-              className="btn btn-primary btn-rounded"
-              onClick={() => {
-                setPage(page + 1);
-              }}
-            >
-              Load More
-            </button>
-          </center>
+        <ol className="list-group list-group-numbered mt-5 mb-5">
+          {storyItem.length > 0 &&
+            storyItem.map((story) => {
+              if (story)
+                return (
+                  <li
+                    key={story.id}
+                    className="list-group-item d-flex justify-content-between align-items-start"
+                  >
+                    <div className="ms-2 me-auto">
+                      <a
+                        href={story.url || "#"}
+                        className="nostyle"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <div className="fw-bold">{story.title}</div>
+                      </a>
+                      <div>
+                        by {story.by} <b>&middot;</b> {story.descendants}{" "}
+                        comments
+                      </div>
+                    </div>
+                    <span className="badge bg-primary rounded-pill">
+                      {timeago(story.time)}
+                    </span>
+                  </li>
+                );
+            })}
+        </ol>
+
+        {storyItem.length > 0 && (
+          <nav>
+            <ul className="pagination justify-content-center align-items-center">
+              <li className="page-item cursor">
+                <span
+                  className="page-link"
+                  onClick={() => {
+                    setPage(1);
+                  }}
+                >
+                  {"<<"}
+                </span>
+              </li>
+              {getPagination(totalPages, page).map((pageOffset) => {
+                return (
+                  <li
+                    key={pageOffset}
+                    className={`page-item cursor ${
+                      pageOffset === page ? "active" : ""
+                    }`}
+                  >
+                    <span
+                      className="page-link"
+                      onClick={() => {
+                        setPage(pageOffset);
+                      }}
+                    >
+                      {pageOffset}
+                    </span>
+                  </li>
+                );
+              })}
+              <li className="page-item cursor">
+                <span
+                  className="page-link"
+                  onClick={() => {
+                    setPage(totalPages);
+                  }}
+                >
+                  {">>"}
+                </span>
+              </li>
+            </ul>
+          </nav>
         )}
       </div>
     </>

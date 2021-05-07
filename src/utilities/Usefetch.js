@@ -8,7 +8,6 @@ export default function useFetch(type) {
     axios
       .get(`https://hacker-news.firebaseio.com/v0/${type}.json?print=pretty`)
       .then((resp) => {
-        console.log(resp.data);
         setstate(resp.data);
       })
       .catch((err) => console.log(err));
@@ -17,5 +16,5 @@ export default function useFetch(type) {
     };
   }, [type]);
 
-  return [state, state.length];
+  return [state, Math.floor(state.length / 10)];
 }
