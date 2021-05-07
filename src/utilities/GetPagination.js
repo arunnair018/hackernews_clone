@@ -1,6 +1,5 @@
 export default function getPagination(count, current) {
   var shownPages = 3;
-  var result = [];
   if (current < shownPages) {
     return [1, 2, 3, 4, 5];
   }

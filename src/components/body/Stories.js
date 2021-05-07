@@ -80,6 +80,7 @@ const Stories = ({ type }) => {
                     </span>
                   </li>
                 );
+              return "";
             })}
         </ol>
 
