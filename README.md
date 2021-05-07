@@ -1,7 +1,12 @@
 # hackernews_clone
 
-A web app clone of hacker news.
+A web app clone of hacker news.  
+Checkout [Demo Site](https://frosty-volhard-7d242c.netlify.app/)
 
-# live demo
+# Topics covered
 
-[Demo Site](https://frosty-volhard-7d242c.netlify.app/)
+- useRef
+- useState
+- useEffect
+- Axios (API calls)
+- React routing

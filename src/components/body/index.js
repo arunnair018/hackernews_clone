@@ -1,15 +1,16 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import TopStories from "./TopStories";
-import BestStories from "./BestStories";
-import NewStories from "./NewStories";
+import Stories from "./Stories";
 
 const Body = () => (
   <>
     <Switch>
-      <Route exact path="/" component={TopStories} />
-      <Route path="/newstories" component={NewStories} />
-      <Route path="/beststories" component={BestStories} />
+      <Route exact path="/" render={() => <Stories type={"newstories"} />} />
+      <Route
+        exact
+        path="/:type"
+        render={(props) => <Stories type={props.match.params.type} />}
+      />
     </Switch>
   </>
 );

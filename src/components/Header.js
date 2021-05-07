@@ -27,13 +27,13 @@ const Header = () => (
         >
           <ul className="navbar-nav mb-2 mb-lg-0">
             <li className="nav-item m-2">
-              <NavLink className="nav-link" exact to="/">
-                Top Stories
+              <NavLink className="nav-link" to="/newstories">
+                New Stories
               </NavLink>
             </li>
             <li className="nav-item m-2">
-              <NavLink className="nav-link" to="/newstories">
-                New Stories
+              <NavLink className="nav-link" exact to="/topstories">
+                Top Stories
               </NavLink>
             </li>
             <li className="nav-item m-2">
