@@ -2,7 +2,10 @@ import axios from "axios";
 import timeago from "../../utilities/Timeago";
 import React, { useState, useEffect, useRef } from "react";
 import useFetch from "../../utilities/Usefetch";
-import getPagination from "../../utilities/GetPagination";
+import Pagination from "./Pagination";
+import LoadingIcon from "./LoadingIcon";
+import { Redirect } from "react-router";
+import { storyTypes } from "../../utilities/Constants";
 const Stories = ({ type }) => {
   const limit = 10;
   const [page, setPage] = useState(1);
@@ -23,33 +26,26 @@ const Stories = ({ type }) => {
       setStoryItem(newStories);
       setLoading(false);
     });
-    return async () => {
+    return () => {
       setLoading(true);
       setStoryItem([]);
       if (prevType.current !== type) {
-        console.log("cleanUp on type change");
         setPage(1);
       }
-      console.log("cleanUp callback");
       prevType.current = type;
     };
   }, [type, storyIndex, page]);
 
   console.log(storyItem);
-
+  if (!Object.values(storyTypes).includes(type)) {
+    return <Redirect to="/" />;
+  }
   return (
     <>
       <div className="container mb-5">
-        {loading && (
+        {loading && storyItem.length === 0 && (
           <center>
-            <div className="loadingio-spinner-bars-ou4wi5t900s">
-              <div className="ldio-hy4ytz1hdz">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </div>
+            <LoadingIcon />
           </center>
         )}
         <ol className="list-group list-group-numbered mt-5 mb-5">
@@ -85,49 +81,7 @@ const Stories = ({ type }) => {
         </ol>
 
         {storyItem.length > 0 && (
-          <nav>
-            <ul className="pagination justify-content-center align-items-center">
-              <li className="page-item cursor">
-                <span
-                  className="page-link"
-                  onClick={() => {
-                    setPage(1);
-                  }}
-                >
-                  {"<<"}
-                </span>
-              </li>
-              {getPagination(totalPages, page).map((pageOffset) => {
-                return (
-                  <li
-                    key={pageOffset}
-                    className={`page-item cursor ${
-                      pageOffset === page ? "active" : ""
-                    }`}
-                  >
-                    <span
-                      className="page-link"
-                      onClick={() => {
-                        setPage(pageOffset);
-                      }}
-                    >
-                      {pageOffset}
-                    </span>
-                  </li>
-                );
-              })}
-              <li className="page-item cursor">
-                <span
-                  className="page-link"
-                  onClick={() => {
-                    setPage(totalPages);
-                  }}
-                >
-                  {">>"}
-                </span>
-              </li>
-            </ul>
-          </nav>
+          <Pagination totalPages={totalPages} page={page} setPage={setPage} />
         )}
       </div>
     </>
