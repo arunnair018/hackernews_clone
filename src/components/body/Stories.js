@@ -1,6 +1,6 @@
 import axios from "axios";
 import timeago from "../../utilities/Timeago";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../utilities/Usefetch";
 import Pagination from "./Pagination";
 import LoadingIcon from "./LoadingIcon";
@@ -12,7 +12,12 @@ const Stories = ({ type }) => {
   const [loading, setLoading] = useState(true);
   const [storyItem, setStoryItem] = useState([]);
   const [storyIndex, totalPages] = useFetch(type);
-  const prevType = useRef(type);
+
+  useEffect(() => {
+    setLoading(true);
+    setStoryItem([]);
+    setPage(1);
+  }, [type]);
 
   useEffect(() => {
     Promise.all(
@@ -29,12 +34,8 @@ const Stories = ({ type }) => {
     return () => {
       setLoading(true);
       setStoryItem([]);
-      if (prevType.current !== type) {
-        setPage(1);
-      }
-      prevType.current = type;
     };
-  }, [type, storyIndex, page]);
+  }, [storyIndex, page]);
 
   console.log(storyItem);
   if (!Object.values(storyTypes).includes(type)) {
